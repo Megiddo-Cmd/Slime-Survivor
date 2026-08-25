@@ -5,6 +5,7 @@ width = info.current_w
 height = info.current_h
 screen = pygame.display.set_mode()
 
+# 맥은 \\가 아니라 /로 해야함 분기 처리 부탁
 i_s_b = pygame.image.load('src\\img\\slime_back.png')
 i_s_b = pygame.transform.scale(i_s_b,(50,50))
 i_s_f = pygame.image.load('src\\img\\slime_front.png')
