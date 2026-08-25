@@ -8,10 +8,11 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LCTRL:
+            if event.key == pygame.K_LSHIFT:
                 LCTRL = True
             if event.key == pygame.K_ESCAPE and LCTRL:
                 running = False
         if event.type == pygame.KEYUP:
-            
+            if event.type == pygame.K_LSHIFT:
+                LCTRL = False
 #Kevin test 입니다.
