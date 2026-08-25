@@ -5,19 +5,27 @@ width = info.current_w
 height = info.current_h
 screen = pygame.display.set_mode()
 
-
+#경로지정
 path_back = os.path.join("src", "img", "slime_back.png")
 path_front = os.path.join("src", "img", "slime_front.png")
 path_lr = os.path.join("src", "img", "slime_lr.png")
+path_back_lr = os.path.join("src", "img", "slime_back_lr.png")
 
+#후방
 i_s_b = pygame.image.load(path_back)
 i_s_b = pygame.transform.scale(i_s_b,(50,50))
+#전방
 i_s_f = pygame.image.load(path_front)
 i_s_f = pygame.transform.scale(i_s_f,(50,50))
+#좌우
 i_s_l = pygame.image.load(path_lr)
 i_s_l = pygame.transform.scale(i_s_l,(50,50))
 i_s_r = pygame.transform.flip(i_s_l,1,0)
- 
+#후방 좌우
+i_s_bl = pygame.image.load(path_back_lr)
+i_s_bl = pygame.transform.scale(i_s_bl, (50, 50))
+i_s_br = pygame.transform.flip(i_s_bl, 1, 0)
+
 p_rect = pygame.Rect(0,0,50,50)
 p_i = i_s_f
 running = True
