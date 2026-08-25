@@ -1,16 +1,20 @@
-import pygame,sys,random
+import pygame,sys,random,os
 pygame.init()
 info = pygame.display.Info()
 width = info.current_w
 height = info.current_h
 screen = pygame.display.set_mode()
 
-# 맥은 \ 나 ₩가 아니라 /로 해야함 분기 처리 부탁
-i_s_b = pygame.image.load('src\\img\\slime_back.png')
+
+path_back = os.path.join("src", "img", "slime_back.png")
+path_front = os.path.join("src", "img", "slime_front.png")
+path_lr = os.path.join("src", "img", "slime_lr.png")
+
+i_s_b = pygame.image.load(path_back)
 i_s_b = pygame.transform.scale(i_s_b,(50,50))
-i_s_f = pygame.image.load('src\\img\\slime_front.png')
+i_s_f = pygame.image.load(path_front)
 i_s_f = pygame.transform.scale(i_s_f,(50,50))
-i_s_l = pygame.image.load('src\\img\\slime_lr.png')
+i_s_l = pygame.image.load(path_lr)
 i_s_l = pygame.transform.scale(i_s_l,(50,50))
 i_s_r = pygame.transform.flip(i_s_l,1,0)
  
