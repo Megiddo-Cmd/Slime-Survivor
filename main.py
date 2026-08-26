@@ -57,7 +57,11 @@ while running:
     if keyInput[pygame.K_DOWN] and p_rect.bottom < height:
         p_rect.top += 2
         p_i = i_s_b
-    screen.fill((0,0,0))
+        if keyInput[pygame.K_LEFT] and p_rect.left > 0:
+            p_i = i_s_bl
+        if keyInput[pygame.K_RIGHT] and p_rect.right < width:
+            p_i = i_s_br
+    screen.fill((255,255,255))
     screen.blit(p_i,p_rect)
     pygame.display.update()
 #Kevin test 입니다.
