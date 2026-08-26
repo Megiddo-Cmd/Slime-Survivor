@@ -3,7 +3,9 @@ pygame.init()
 info = pygame.display.Info()
 width = info.current_w
 height = info.current_h
-screen = pygame.display.set_mode((width, height))
+screen = pygame.display.set_mode((width, height), pygame.RESIZABLE)
+pygame.display.set_caption("Slime Survivor")
+pygame.display.set_icon(pygame.image.load(os.path.join(".","Icon.png")))
 
 #경로지정
 path_back = os.path.join("src", "img", "player", "slime_back.png")
@@ -14,7 +16,7 @@ path_stage1_1 = os.path.join("src", "img", "stage1", "stage1_1.png")
 path_stage1_2 = os.path.join("src", "img", "stage1", "stage1_2.png")
 
 player_size = 70
-player_speed = 3
+player_speed = 8
 
 #후방
 i_s_b = pygame.image.load(path_back)
@@ -50,6 +52,9 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        if event.type == pygame.VIDEORESIZE:
+            width, height = event.w, event.h
+            screen = pygame.display.set_mode((width, height), pygame.RESIZABLE)
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LSHIFT:
                 LCTRL = True
