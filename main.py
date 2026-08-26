@@ -26,7 +26,7 @@ i_s_bl = pygame.image.load(path_back_lr)
 i_s_bl = pygame.transform.scale(i_s_bl, (50, 50))
 i_s_br = pygame.transform.flip(i_s_bl, 1, 0)
 
-#후방좌우 이미지를 아래쪽 화살표와 좌/우 화살표를 동시에 눌렀을 때 사용하도록 설정 필요
+#후방좌우 이미지를 아래쪽 화살표와 좌/우 화살표를 동시에 눌렀을 때 사용하도록 설정 필요 - Megiddo-Cmd가 완료
 
 p_rect = pygame.Rect(0,0,50,50)
 p_i = i_s_f
