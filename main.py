@@ -62,7 +62,6 @@ class Projectile:
         degrees = math.degrees(self.angle)
         
         # 참격 이미지의 기본 방향에 맞게 회전 각도를 보정합니다.
-        # 만약 이래도 방향이 이상하면 -90도나 +90도 등으로 숫자를 조절해 보면 딱 맞습니다!
         self.image = pygame.transform.rotate(base_img, -degrees - 110)
         self.rect = self.image.get_rect(center=(x, y))
         
