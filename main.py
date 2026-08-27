@@ -14,6 +14,7 @@ path_lr = os.path.join("src", "img", "player", "slime_lr.png")
 path_back_lr = os.path.join("src", "img", "player", "slime_back_lr.png")
 path_stage1_1 = os.path.join("src", "img", "stage1", "stage1_1.png")
 path_stage1_2 = os.path.join("src", "img", "stage1", "stage1_2.png")
+path_skill_q = os.path.join("src", "img", "player", "slime_skill_q.png")
 
 player_size = 70
 player_speed = 8
@@ -32,6 +33,10 @@ i_s_r = pygame.transform.flip(i_s_l,1,0)
 i_s_bl = pygame.image.load(path_back_lr)
 i_s_bl = pygame.transform.scale(i_s_bl, (player_size, player_size))
 i_s_br = pygame.transform.flip(i_s_bl, 1, 0)
+
+skill_q_image = pygame.image.load(path_skill_q)
+skill_q_image = pygame.transform.scale(skill_q_image, (40, 40))  # 스킬 이미지 크기 조정
+
 TILE_SIZE = (128, 128)
 
 stage1_images = [
@@ -49,12 +54,18 @@ projectiles = []
 
 class Projectile:
     def __init__(self, x, y, target_x, target_y):
-        # 실의 형태를 표현하기 위해 길쭉한 직사각형으로 생성 (너비 20, 높이 6)
-        self.rect = pygame.Rect(x, y, 20, 6)
-        self.color = (180, 100, 255) # 은은한 마력의 실 색상
+        self.size = 60
+        base_img = pygame.transform.scale(skill_q_image, (self.size, self.size))
         
-        # 각도 계산
+        # 각도 계산 (라디안 -> 각도 변환)
         self.angle = math.atan2(target_y - y, target_x - x)
+        degrees = math.degrees(self.angle)
+        
+        # 참격 이미지의 기본 방향에 맞게 회전 각도를 보정합니다.
+        # 만약 이래도 방향이 이상하면 -90도나 +90도 등으로 숫자를 조절해 보면 딱 맞습니다!
+        self.image = pygame.transform.rotate(base_img, -degrees - 110)
+        self.rect = self.image.get_rect(center=(x, y))
+        
         speed = 16
         self.dx = math.cos(self.angle) * speed
         self.dy = math.sin(self.angle) * speed
@@ -62,6 +73,9 @@ class Projectile:
     def update(self):
         self.rect.x += self.dx
         self.rect.y += self.dy
+
+
+
 
 
 
@@ -117,25 +131,23 @@ while running:
             
             # 스킬 입력을 KEYDOWN 이벤트 안으로 이동하여 연사 방지
             if event.key == pygame.K_q:
-                # Q: 수인 (플레이어 주변 근접 광역 타격)
-                print("스킬 발동: 수인!")
-                for enemy in enemies[:]:
-                    if p_rect.colliderect(enemy.rect.inflate(80, 80)):
-                        enemy.hp -= 40
-                        if enemy.hp <= 0:
-                            enemies.remove(enemy)
+                print("스킬 발동: 수인 발사!")
+                target_x, target_y = 0, 0
+                if enemies:
+                    # 가장 가까운 적을 자동 조준
+                    closest_enemy = min(enemies, key=lambda e: math.hypot(e.rect.centerx - p_rect.centerx, e.rect.centery - p_rect.centery))
+                    target_x, target_y = closest_enemy.rect.centerx, closest_enemy.rect.centery
+                else:
+                    # 적이 없으면 마지막 이동 방향으로 발사
+                    target_x, target_y = p_rect.centerx + last_dir_x * 100, p_rect.centery + last_dir_y * 100
+                
+                projectiles.append(Projectile(p_rect.centerx, p_rect.centery, target_x, target_y))
+
 
             if event.key == pygame.K_w:
                 # W: 점강사 (실 발사 및 자동 조준)
                 print("스킬 발동: 점강사!")
-                target_x, target_y = 0, 0
-                if enemies:
-                    closest_enemy = min(enemies, key=lambda e: math.hypot(e.rect.centerx - p_rect.centerx, e.rect.centery - p_rect.centery))
-                    target_x, target_y = closest_enemy.rect.centerx, closest_enemy.rect.centery
-                else:
-                    target_x, target_y = p_rect.centerx + last_dir_x * 100, p_rect.centery + last_dir_y * 100
-                
-                projectiles.append(Projectile(p_rect.centerx, p_rect.centery, target_x, target_y))
+                #추후 구현
 
             if event.key == pygame.K_e:
                 # E: 마비톡식 (넓은 범위의 적에게 데미지)
@@ -207,7 +219,6 @@ while running:
         for enemy in enemies[:]:
             if proj.rect.colliderect(enemy.rect):
                 # 명중한 적과 주변 적들에게 실 압박 폭발 데미지 부여!
-                print("점강사 폭발!")
                 for target in enemies[:]:
                     # 폭발 반경(예: 80픽셀) 내의 적들에게 광역 데미지
                     if math.hypot(target.rect.centerx - proj.rect.centerx, target.rect.centery - proj.rect.centery) < 80:
@@ -257,9 +268,9 @@ while running:
 
     # 투사체 렌더링
     for proj in projectiles:
-        draw_x = proj.rect.x - p_rect.x + width // 2
-        draw_y = proj.rect.y - p_rect.y + height // 2
-        pygame.draw.circle(screen, proj.color, (draw_x, draw_y), 8)
+        draw_x = proj.rect.x - p_rect.x + (width // 2 - player_size // 2)
+        draw_y = proj.rect.y - p_rect.y + (height // 2 - player_size // 2)
+        screen.blit(proj.image, (draw_x, draw_y))
 
     player_screen_pos = (width // 2 - player_size // 2, height // 2 - player_size // 2)
     
