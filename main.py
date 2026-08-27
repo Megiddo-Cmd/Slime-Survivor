@@ -62,7 +62,7 @@ class Projectile:
         degrees = math.degrees(self.angle)
         
         # 참격 이미지의 기본 방향에 맞게 회전 각도를 보정합니다.
-        self.image = pygame.transform.rotate(base_img, -degrees - 110)
+        self.image = pygame.transform.rotate(base_img, -degrees)
         self.rect = self.image.get_rect(center=(x, y))
         
         speed = 16
@@ -106,7 +106,7 @@ class Enemy:
 
 enemies = []
 SPAWN_ENEMY = pygame.USEREVENT + 1
-pygame.time.set_timer(SPAWN_ENEMY, 1500)
+pygame.time.set_timer(SPAWN_ENEMY, 800)
 
 last_dir_x, last_dir_y = 0, 1
 
