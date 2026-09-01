@@ -168,6 +168,7 @@ def run_game(game_data):
                             target_x, target_y = p_rect.centerx + last_dir_x * 100, p_rect.centery + last_dir_y * 100
                         
                         projectiles.append(Projectile(p_rect.centerx, p_rect.centery, target_x, target_y))
+                        q_cool = 42
 
 
                 if event.key == pygame.K_w:
