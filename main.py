@@ -23,8 +23,7 @@ def run_game(game_data):
     path_skill_q = os.path.join("src", "img", "player", "slime_skill_q.png")
     path_skill_r = os.path.join("src", "img", "player", "slime_skill_r.png")
     path_skill_e = os.path.join("src", "img", "player", "slime_skill_e.png")
-
-
+    path_enemy1 = os.path.join("src", "img", "stage1", "Stage1_Enemy.png")
 
     player_size = 70
     player_speed = 8
@@ -110,7 +109,8 @@ def run_game(game_data):
             self.size = 50
             self.rect = pygame.Rect(x, y, self.size, self.size)
             self.speed = 4
-            self.color = (200, 50, 50)
+            self.img = pygame.image.load(path_enemy1)
+            self.img = pygame.transform.scale(self.img,(32,32))
             self.poison_timer = 0  # 독 데미지가 들어갈 남은 프레임/시간
             self.poison_tick = 0 
 
@@ -311,7 +311,7 @@ def run_game(game_data):
         for enemy in enemies:
             draw_x = enemy.rect.x - p_rect.x + (width // 2 - player_size // 2)
             draw_y = enemy.rect.y - p_rect.y + (height // 2 - player_size // 2)
-            pygame.draw.rect(screen, enemy.color, (draw_x, draw_y, enemy.size, enemy.size))
+            screen.blit(enemy.img, (draw_x, draw_y, enemy.size, enemy.size))
 
         # 투사체 렌더링
         for proj in projectiles:
