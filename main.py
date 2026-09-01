@@ -258,10 +258,9 @@ def run_game(game_data):
                     # 명중한 적과 주변 적들에게 실 압박 폭발 데미지 부여!
                     for target in enemies[:]:
                         # 폭발 반경(예: 80픽셀) 내의 적들에게 광역 데미지
-                        if math.hypot(target.rect.centerx - proj.rect.centerx, target.rect.centery - proj.rect.centery) < 80:
-                            target.hp -= 10  # 강력한 폭발 데미지
-                            if target.hp <= 0 and target in enemies:
-                                enemies.remove(target)
+                        target.hp -= 10  # 강력한 폭발 데미지
+                    if target.hp <= 0 and target in enemies:
+                        enemies.remove(target)
                     hit_proj = True
                     break
             
@@ -289,7 +288,7 @@ def run_game(game_data):
 
             if p_rect.colliderect(enemy.rect):
                 if hit_cooldown == 0:
-                    damage = 10 if defense_buff > 0 else 20  
+                    damage = 5 if defense_buff > 0 else 20  
                     player_hp -= damage  
                     hit_cooldown = 30  
                     print(f"Hit! Current HP: {player_hp}")
