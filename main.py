@@ -276,7 +276,7 @@ def run_game(game_data):
                 enemy.poison_tick += 1
                 
                 # 예: 30프레임(약 0.5초)마다 독 데미지 틱이 들어가도록 설정 (누적 데미지)
-                if enemy.poison_tick >= 30:
+                if enemy.poison_tick >= 60:
                     enemy.poison_tick = 0
                     enemy.hp -= 10  # 틱당 독 데미지
                     print(f"독 데미지 누적! 남은 HP: {enemy.hp}")
