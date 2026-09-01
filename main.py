@@ -3,12 +3,12 @@ from menu import run_menu
 
 def run_game(game_data):
     # 전달받은 데이터 활용 예시 (스테이지, 레벨 등)
-    current_stage = game_data.get("stage", 1)
+    current_stage = game_data.get("stage", "level")
     
     pygame.init()
     info = pygame.display.Info()
-    width = info.current_w
-    height = info.current_h
+    width = int(info.current_w *0.7)
+    height = int(info.current_h * 0.7)
     screen = pygame.display.set_mode((width, height), pygame.RESIZABLE)
     pygame.display.set_caption(f"Slime Survivor - Stage {current_stage}")
     pygame.display.set_icon(pygame.image.load(os.path.join(".","Icon.png")))
