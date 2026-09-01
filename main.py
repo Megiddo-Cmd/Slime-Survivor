@@ -61,6 +61,7 @@ def run_game(game_data):
         pygame.transform.scale(pygame.image.load(path_stage1_2), TILE_SIZE)
     ]
 
+    q_cool = 0
     max_hp = 1000
     player_hp = max_hp
     hit_cooldown = 0  
@@ -155,17 +156,18 @@ def run_game(game_data):
                 
                 # 스킬 입력을 KEYDOWN 이벤트 안으로 이동하여 연사 방지
                 if event.key == pygame.K_q:
-                    print("스킬 발동: 수인 발사!")
-                    target_x, target_y = 0, 0
-                    if enemies:
-                        # 가장 가까운 적을 자동 조준
-                        closest_enemy = min(enemies, key=lambda e: math.hypot(e.rect.centerx - p_rect.centerx, e.rect.centery - p_rect.centery))
-                        target_x, target_y = closest_enemy.rect.centerx, closest_enemy.rect.centery
-                    else:
-                        # 적이 없으면 마지막 이동 방향으로 발사
-                        target_x, target_y = p_rect.centerx + last_dir_x * 100, p_rect.centery + last_dir_y * 100
-                    
-                    projectiles.append(Projectile(p_rect.centerx, p_rect.centery, target_x, target_y))
+                    if q_cool == 0:
+                        print("스킬 발동: 수인 발사!")
+                        target_x, target_y = 0, 0
+                        if enemies:
+                            # 가장 가까운 적을 자동 조준
+                            closest_enemy = min(enemies, key=lambda e: math.hypot(e.rect.centerx - p_rect.centerx, e.rect.centery - p_rect.centery))
+                            target_x, target_y = closest_enemy.rect.centerx, closest_enemy.rect.centery
+                        else:
+                            # 적이 없으면 마지막 이동 방향으로 발사
+                            target_x, target_y = p_rect.centerx + last_dir_x * 100, p_rect.centery + last_dir_y * 100
+                        
+                        projectiles.append(Projectile(p_rect.centerx, p_rect.centery, target_x, target_y))
 
 
                 if event.key == pygame.K_w:
@@ -256,7 +258,7 @@ def run_game(game_data):
                     for target in enemies[:]:
                         # 폭발 반경(예: 80픽셀) 내의 적들에게 광역 데미지
                         if math.hypot(target.rect.centerx - proj.rect.centerx, target.rect.centery - proj.rect.centery) < 80:
-                            target.hp -= 50  # 강력한 폭발 데미지
+                            target.hp -= 10  # 강력한 폭발 데미지
                             if target.hp <= 0 and target in enemies:
                                 enemies.remove(target)
                     hit_proj = True
