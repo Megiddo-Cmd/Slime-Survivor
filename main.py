@@ -1,6 +1,8 @@
 import pygame, sys, random, os, math
 from menu import run_menu
 
+#hello
+
 def run_game(game_data):
     # 전달받은 데이터 활용 예시 (스테이지, 레벨 등)
     current_stage = game_data.get("stage", "level")
