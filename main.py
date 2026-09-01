@@ -156,7 +156,7 @@ def run_game(game_data):
                 
                 # 스킬 입력을 KEYDOWN 이벤트 안으로 이동하여 연사 방지
                 if event.key == pygame.K_q:
-                    if q_cool == 0:
+                    if q_cool < 0:
                         print("스킬 발동: 수인 발사!")
                         target_x, target_y = 0, 0
                         if enemies:
@@ -356,7 +356,8 @@ def run_game(game_data):
             e_img_y = (height // 2) - 125
             screen.blit(skill_e_image, (e_img_x, e_img_y))
 
-
+        defense_buff -= 1
+        q_cool -= 1
 
         pygame.display.update()
         clock.tick(60)
