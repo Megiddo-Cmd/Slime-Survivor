@@ -13,7 +13,7 @@ i_s_l = pygame.image.load('src\\img\\slime_lr.png')
 i_s_l = pygame.transform.scale(i_s_l,(100,100))
 i_s_r = pygame.transform.flip(i_s_l,1,0)
  
-p_rect = pygame.Rect(0,0,100,100)
+p_rect = pygame.Rect(0,0,50,50)
 p_i = i_s_f
 running = True
 LCTRL = False
