@@ -60,8 +60,9 @@ def run_game(game_data):
         pygame.transform.scale(pygame.image.load(path_stage1_1), TILE_SIZE),
         pygame.transform.scale(pygame.image.load(path_stage1_2), TILE_SIZE)
     ]
-
+    
     q_cool = 0
+    r_cool = 0
     max_hp = 1000
     player_hp = max_hp
     hit_cooldown = 0  
@@ -168,7 +169,7 @@ def run_game(game_data):
                             target_x, target_y = p_rect.centerx + last_dir_x * 100, p_rect.centery + last_dir_y * 100
                         
                         projectiles.append(Projectile(p_rect.centerx, p_rect.centery, target_x, target_y))
-                        q_cool = 42
+                        q_cool = 18
 
 
                 if event.key == pygame.K_w:
@@ -196,9 +197,11 @@ def run_game(game_data):
                             print("적에게 독 부여!")
 
                 if event.key == pygame.K_r:
-                    print("스킬 발동: 신체장갑!")
-                    # 나중에 레벨업 구현 시 defense_buff_duration 값을 늘려주면 지속 시간이 함께 증가합니다!
-                    defense_buff = defense_buff_duration
+                    if r_cool < 0:
+                        print("스킬 발동: 신체장갑!")
+                        # 나중에 레벨업 구현 시 defense_buff_duration 값을 늘려주면 지속 시간이 함께 증가합니다!
+                        defense_buff = defense_buff_duration
+                        r_cool = 660
 
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LSHIFT:
@@ -220,7 +223,7 @@ def run_game(game_data):
                     ey = random.randint(p_rect.y - height, p_rect.y + height)
                 
                 enemies.append(Enemy(ex, ey))
-        
+                spawn_cool = 1
 
         keyInput = pygame.key.get_pressed()
         
@@ -288,7 +291,8 @@ def run_game(game_data):
 
             if p_rect.colliderect(enemy.rect):
                 if hit_cooldown == 0:
-                    damage = 5 if defense_buff > 0 else 20  
+                    damage = 5 if defense_buff > 0 else 20
+                    print(5 if defense_buff > 0 else 20)  
                     player_hp -= damage  
                     hit_cooldown = 30  
                     print(f"Hit! Current HP: {player_hp}")
@@ -358,6 +362,7 @@ def run_game(game_data):
 
         defense_buff -= 1
         q_cool -= 1
+        r_cool -= 1
 
         pygame.display.update()
         clock.tick(60)
