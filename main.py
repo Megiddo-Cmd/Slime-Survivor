@@ -1,6 +1,8 @@
 import pygame, sys, random, os, math
 from menu import run_menu
 
+#hello
+
 def run_game(game_data):
     # 전달받은 데이터 활용 예시 (스테이지, 레벨 등)
     current_stage = game_data.get("stage", "level")
@@ -110,7 +112,7 @@ def run_game(game_data):
             self.rect = pygame.Rect(x, y, self.size, self.size)
             self.speed = 2
             self.img = pygame.image.load(path_enemy1)
-            self.img = pygame.transform.scale(self.img,(32,32))
+            self.img = pygame.transform.scale(self.img,(65,65))
             self.poison_timer = 0  # 독 데미지가 들어갈 남은 프레임/시간
             self.poison_tick = 0 
 
