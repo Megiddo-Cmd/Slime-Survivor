@@ -23,6 +23,7 @@ def run_game(game_data):
     path_stage1_1 = os.path.join("src", "img", "stage1", "stage1_1.png")
     path_stage1_2 = os.path.join("src", "img", "stage1", "stage1_2.png")
     path_skill_q = os.path.join("src", "img", "player", "slime_skill_q.png")
+    path_skill_w = os.path.join("src", "img", "player", "slime_skill_w.png")
     path_skill_r = os.path.join("src", "img", "player", "slime_skill_r.png")
     path_skill_e = os.path.join("src", "img", "player", "slime_skill_e.png")
     path_enemy1 = os.path.join("src", "img", "stage1", "Stage1_Enemy.png")
@@ -47,6 +48,9 @@ def run_game(game_data):
 
     skill_q_image = pygame.image.load(path_skill_q)
     skill_q_image = pygame.transform.scale(skill_q_image, (60, 60))  # 스킬 이미지 크기 조정
+
+    skill_w_image = pygame.image.load(path_skill_w)  # W 스킬 이미지 경로 지정
+    skill_w_image = pygame.transform.scale(skill_w_image, (60, 60))
 
     skill_r_image = pygame.image.load(path_skill_r)
     skill_r_image = pygame.transform.scale(skill_r_image, (80, 80))  # 스킬 이미지 크기 조정
@@ -79,7 +83,8 @@ def run_game(game_data):
         def __init__(self, x, y, target_x, target_y,type):
             if type == 'q':
                 base_img = skill_q_image
-            
+            if type == 'w':
+                base_img = skill_w_image
             # 각도 계산 (라디안 -> 각도 변환)
             self.angle = math.atan2(target_y - y, target_x - x)
             degrees = math.degrees(self.angle)
@@ -176,7 +181,17 @@ def run_game(game_data):
                 if event.key == pygame.K_w:
                     # W: 점강사 (실 발사 및 자동 조준)
                     print("스킬 발동: 점강사!")
-                    #추후 구현
+                    target_x, target_y = 0, 0
+                    if enemies:
+                    # 가장 가까운 적을 자동 조준
+                        closest_enemy = min(enemies, key=lambda e: math.hypot(e.rect.centerx - p_rect.centerx, e.rect.centery - p_rect.centery))
+                        target_x, target_y = closest_enemy.rect.centerx, closest_enemy.rect.centery
+                    else:
+                    # 적이 없으면 마지막 이동 방향으로 발사
+                        target_x, target_y = p_rect.centerx + last_dir_x * 100, p_rect.centery + last_dir_y * 100
+                                            
+                    w_projectiles.append(Projectile(p_rect.centerx, p_rect.centery, target_x, target_y,'w'))
+                    w_cool = 18
 
                 if event.key == pygame.K_e:
                     print("스킬 발동: 마비톡식!")
@@ -254,22 +269,40 @@ def run_game(game_data):
         if move_x != 0 or move_y != 0:
             last_dir_x, last_dir_y = move_x, move_y
 
-        for proj in q_projectiles:
-            proj.update()
+        for qproj in q_projectiles:
+            qproj.update()
             hit_proj = False
             for enemy in enemies:
-                if proj.rect.colliderect(enemy.rect):
+                if qproj.rect.colliderect(enemy.rect):
                     # 명중한 적과 주변 적들에게 실 압박 폭발 데미지 부여!
-                    enemy.hp -= 1000000000  # 강력한 폭발 데미지
+                    enemy.hp -= 10  # 강력한 폭발 데미지
                     if enemy.hp <= 0 and enemy in enemies:
                         enemies.remove(enemy)
                     hit_proj = True
                     break
             
             # 화면 밖을 벗어나거나 적중하면 제거
-            if hit_proj or abs(proj.rect.x - p_rect.x) > width or abs(proj.rect.y - p_rect.y) > height:
-                if proj in q_projectiles:
-                    q_projectiles.remove(proj)
+            if hit_proj or abs(qproj.rect.x - p_rect.x) > width or abs(qproj.rect.y - p_rect.y) > height:
+                if qproj in q_projectiles:
+                    q_projectiles.remove(qproj)
+
+        for wproj in w_projectiles:
+                    wproj.update()
+                    hit_proj = False
+                    for enemy in enemies:
+                        if wproj.rect.colliderect(enemy.rect):
+                            # 명중한 적과 주변 적들에게 실 압박 폭발 데미지 부여!
+                            enemy.hp -= 10  # 강력한 폭발 데미지
+                            if enemy.hp <= 0 and enemy in enemies:
+                                enemies.remove(enemy)
+                            hit_proj = True
+                            break
+                    
+                    # 화면 밖을 벗어나거나 적중하면 제거
+                    if hit_proj or abs(wproj.rect.x - p_rect.x) > width or abs(wproj.rect.y - p_rect.y) > height:
+                        if wproj in w_projectiles:
+                            
+                            w_projectiles.remove(wproj)
 
         for enemy in enemies:
             enemy.move(p_rect)
