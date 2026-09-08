@@ -24,6 +24,7 @@ def run_game(game_data):
     path_stage1_2 = os.path.join("src", "img", "stage1", "stage1_2.png")
     path_skill_q = os.path.join("src", "img", "player", "slime_skill_q.png")
     path_skill_w = os.path.join("src", "img", "player", "slime_skill_w.png")
+    path_skill_w_stick = os.path.join("src", "img", "player", "slime_skill_w_stick.png")
     path_skill_r = os.path.join("src", "img", "player", "slime_skill_r.png")
     path_skill_e = os.path.join("src", "img", "player", "slime_skill_e.png")
     path_enemy1 = os.path.join("src", "img", "stage1", "Stage1_Enemy.png")
@@ -51,6 +52,11 @@ def run_game(game_data):
 
     skill_w_image = pygame.image.load(path_skill_w)  # W 스킬 이미지 경로 지정
     skill_w_image = pygame.transform.scale(skill_w_image, (60, 60))
+
+    # 카우보이 줄 스틱: 고리(왼쪽)가 진행 방향을 향하도록 좌우 반전
+    skill_w_stick_image = pygame.image.load(path_skill_w_stick).convert_alpha()
+    skill_w_stick_image = pygame.transform.scale(skill_w_stick_image, (96, 28))
+    skill_w_stick_image = pygame.transform.flip(skill_w_stick_image, True, False)
 
     skill_r_image = pygame.image.load(path_skill_r)
     skill_r_image = pygame.transform.scale(skill_r_image, (80, 80))  # 스킬 이미지 크기 조정
@@ -91,12 +97,15 @@ def run_game(game_data):
             if type == 'q':
                 self.image = pygame.transform.rotate(base_img, -degrees)
             elif type == 'w':
-                self.image = pygame.transform.rotate(base_img, 0)
+                self.image = base_img
+                self.stick_image = pygame.transform.rotate(skill_w_stick_image, -degrees)
+                self.stick_offset = skill_w_stick_image.get_width() / 2
             # 참격 이미지의 기본 방향에 맞게 회전 각도를 보정합니다.
             
             self.rect = self.image.get_rect(center=(x, y))
+            self.type = type
             
-            speed = 16
+            speed = 22 if type == 'w' else 16
             self.dx = math.cos(self.angle) * speed
             self.dy = math.sin(self.angle) * speed
 
@@ -378,9 +387,19 @@ def run_game(game_data):
             screen.blit(q_proj.image, (draw_x, draw_y))
 
         for w_proj in w_projectiles:
-            draw_x = w_proj.rect.x - p_rect.x + (width // 2 - player_size // 2)
-            draw_y = w_proj.rect.y - p_rect.y + (height // 2 - player_size // 2)
-            screen.blit(w_proj.image, (draw_x, draw_y))
+            player_sx, player_sy = width // 2, height // 2
+            proj_sx = w_proj.rect.centerx - p_rect.centerx + width // 2
+            proj_sy = w_proj.rect.centery - p_rect.centery + height // 2
+            # 슬라임에서 나가는 실
+            pygame.draw.line(screen, (186, 142, 88), (player_sx, player_sy), (proj_sx, proj_sy), 3)
+            # 슬라임 쪽에서 스틱이 발사 방향으로 뻗어 보이게
+            stick_cx = player_sx + math.cos(w_proj.angle) * w_proj.stick_offset
+            stick_cy = player_sy + math.sin(w_proj.angle) * w_proj.stick_offset
+            stick_rect = w_proj.stick_image.get_rect(center=(stick_cx, stick_cy))
+            screen.blit(w_proj.stick_image, stick_rect)
+            # 실 끝에 slime_skill_w.png
+            tip_rect = w_proj.image.get_rect(center=(proj_sx, proj_sy))
+            screen.blit(w_proj.image, tip_rect)
 
         if toxic_timer > 0:
             e_img_x = (width // 2)- 125  # 250의 절반인 125 오프셋
