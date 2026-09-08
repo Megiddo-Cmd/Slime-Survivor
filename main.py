@@ -24,6 +24,7 @@ def run_game(game_data):
     path_stage1_2 = os.path.join("src", "img", "stage1", "stage1_2.png")
     path_skill_q = os.path.join("src", "img", "player", "slime_skill_q.png")
     path_skill_w = os.path.join("src", "img", "player", "slime_skill_w.png")
+    path_skill_w_stick = os.path.join("src","img","player","slime_skill_w_stick")
     path_skill_r = os.path.join("src", "img", "player", "slime_skill_r.png")
     path_skill_e = os.path.join("src", "img", "player", "slime_skill_e.png")
     path_enemy1 = os.path.join("src", "img", "stage1", "Stage1_Enemy.png")
@@ -58,6 +59,7 @@ def run_game(game_data):
     skill_e_image = pygame.image.load(path_skill_e)
     skill_e_image = pygame.transform.scale(skill_e_image, (250, 250))  # 스킬 이미지 크기 조정
 
+    skill_w_stick_image = pygame.image.load(path_skill_w_stick)
     TILE_SIZE = (128, 128)
 
     stage1_images = [
@@ -378,7 +380,7 @@ def run_game(game_data):
             draw_x = w_proj.rect.x - p_rect.x + (width // 2 - player_size // 2)
             draw_y = w_proj.rect.y - p_rect.y + (height // 2 - player_size // 2)
             screen.blit(w_proj.image, (draw_x, draw_y))
-
+            
         if toxic_timer > 0:
             e_img_x = (width // 2)- 125  # 250의 절반인 125 오프셋
             e_img_y = (height // 2) - 125
