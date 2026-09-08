@@ -21,6 +21,7 @@ def run_menu():
     width, height = 800, 700
     screen = pygame.display.set_mode((width, height), pygame.RESIZABLE)
     pygame.display.set_caption("Slime Survivor - Menu")
+    pygame.display.set_icon(pygame.image.load(os.path.join(".","Icon.png")))
     clock = pygame.time.Clock()
 
     # 폰트 설정 (시스템 기본 폰트 사용)
