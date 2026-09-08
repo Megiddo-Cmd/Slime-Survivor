@@ -28,7 +28,6 @@ def run_game(game_data):
     path_skill_e = os.path.join("src", "img", "player", "slime_skill_e.png")
     path_enemy1 = os.path.join("src", "img", "stage1", "Stage1_Enemy.png")
 
-
     player_size = 70
     player_speed = 8
 
@@ -101,6 +100,11 @@ def run_game(game_data):
         def update(self):
             self.rect.x += self.dx
             self.rect.y += self.dy
+
+
+
+
+
 
     p_rect = pygame.Rect(width // 2, height // 2, player_size, player_size)
     p_i = i_s_f
