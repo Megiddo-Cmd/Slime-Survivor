@@ -281,7 +281,7 @@ def run_game(game_data):
                 enemy.poison_tick += 1
                 
                 # 예: 30프레임(약 0.5초)마다 독 데미지 틱이 들어가도록 설정 (누적 데미지)
-                if enemy.poison_tick >= 60:
+                if enemy.poison_tick >= 10:
                     enemy.poison_tick = 0
                     enemy.hp -= 10  # 틱당 독 데미지
                     print(f"독 데미지 누적! 남은 HP: {enemy.hp}")
@@ -327,6 +327,11 @@ def run_game(game_data):
             draw_y = proj.rect.y - p_rect.y + (height // 2 - player_size // 2)
             screen.blit(proj.image, (draw_x, draw_y))
 
+        if toxic_timer > 0:
+            e_img_x = (width // 2)- 125  # 250의 절반인 125 오프셋
+            e_img_y = (height // 2) - 125
+            screen.blit(skill_e_image, (e_img_x, e_img_y))
+
         player_screen_pos = (width // 2 - player_size // 2, height // 2 - player_size // 2)
         
         # 무적 시간 동안 플레이어가 깜빡이도록 연출
@@ -355,14 +360,9 @@ def run_game(game_data):
             r_img_y = (height // 2 - player_size // 2) + (player_size // 2) - 40
             screen.blit(skill_r_image, (r_img_x, r_img_y))
 
-        if toxic_timer > 0:
-            e_img_x = (width // 2)- 125  # 250의 절반인 125 오프셋
-            e_img_y = (height // 2) - 125
-            screen.blit(skill_e_image, (e_img_x, e_img_y))
-
-        defense_buff -= 1
-        q_cool -= 1
-        r_cool -= 1
+        if defense_buff >=0:defense_buff -= 1
+        if q_cool>=0:q_cool -= 1
+        if r_cool>=0:r_cool -= 1
 
         pygame.display.update()
         clock.tick(60)
