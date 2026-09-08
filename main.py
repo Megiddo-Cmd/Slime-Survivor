@@ -84,7 +84,8 @@ def run_game(game_data):
         def __init__(self, x, y, target_x, target_y,type):
             if type == 'q':
                 base_img = skill_q_image
-            
+            elif type == 'w':
+                base_img = skill_w_image
             # 각도 계산 (라디안 -> 각도 변환)
             self.angle = math.atan2(target_y - y, target_x - x)
             degrees = math.degrees(self.angle)
@@ -131,7 +132,7 @@ def run_game(game_data):
                 self.rect.y -= self.speed
 
     
-    class gunner(Enemy.__init__):
+    class gunner:
         def move(self, target_rect): 
             if abs(abs(target_x-self.x)**2+abs(target_y-self.y)**2-(height*0.4)**2)<=2:
                 return None
