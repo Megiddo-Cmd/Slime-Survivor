@@ -135,6 +135,20 @@ def run_game(game_data):
             elif self.rect.y > target_rect.y:
                 self.rect.y -= self.speed
 
+    
+    class gunner:
+        def move(self, target_rect): 
+            if abs(abs(target_x-self.x)**2+abs(target_y-self.y)**2-(height*0.4)**2)<=2:
+                return None
+            elif abs(target_x-self.x)**2+abs(target_y-self.y)**2<=(height*0.4)**2-2:
+                if self.rect.x > target_rect.x:
+                    self.rect.x += self.speed
+                elif self.rect.x < target_rect.x:
+                    self.rect.x -= self.speed
+                if self.rect.y > target_rect.y:
+                    self.rect.y += self.speed
+                elif self.rect.y < target_rect.y:
+                    self.rect.y -= self.speed
     enemies = []
     SPAWN_ENEMY = pygame.USEREVENT + 1
     pygame.time.set_timer(SPAWN_ENEMY, 800)
