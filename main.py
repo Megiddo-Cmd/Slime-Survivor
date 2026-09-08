@@ -260,11 +260,9 @@ def run_game(game_data):
             for enemy in enemies:
                 if proj.rect.colliderect(enemy.rect):
                     # 명중한 적과 주변 적들에게 실 압박 폭발 데미지 부여!
-                    for target in enemies:
-                        # 폭발 반경(예: 80픽셀) 내의 적들에게 광역 데미지
-                        target.hp -= 1000000000  # 강력한 폭발 데미지
-                    if target.hp <= 0 and target in enemies:
-                        enemies.remove(target)
+                    enemy.hp -= 1000000000  # 강력한 폭발 데미지
+                    if enemy.hp <= 0 and enemy in enemies:
+                        enemies.remove(enemy)
                     hit_proj = True
                     break
             
@@ -285,7 +283,8 @@ def run_game(game_data):
                 if enemy.poison_tick >= 4:
                     enemy.poison_tick = 0
                     enemy.hp -= 1  # 틱당 독 데미지
-                    print(f"독 데미지 누적! 남은 HP: {enemy.hp}")
+                    if enemy.hp <= 0:
+                        print(f"독 데미지 누적! 남은 HP: {enemy.hp}")
                     if enemy.hp <= 0:
                         enemies.remove(enemy)
                         continue
