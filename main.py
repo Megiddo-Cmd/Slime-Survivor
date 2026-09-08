@@ -28,7 +28,6 @@ def run_game(game_data):
     path_skill_e = os.path.join("src", "img", "player", "slime_skill_e.png")
     path_enemy1 = os.path.join("src", "img", "stage1", "Stage1_Enemy.png")
 
-
     player_size = 70
     player_speed = 8
 
@@ -84,7 +83,8 @@ def run_game(game_data):
         def __init__(self, x, y, target_x, target_y,type):
             if type == 'q':
                 base_img = skill_q_image
-            
+            if type == 'w':
+                base_img = skill_w_image
             # 각도 계산 (라디안 -> 각도 변환)
             self.angle = math.atan2(target_y - y, target_x - x)
             degrees = math.degrees(self.angle)
@@ -100,6 +100,11 @@ def run_game(game_data):
         def update(self):
             self.rect.x += self.dx
             self.rect.y += self.dy
+
+
+
+
+
 
     p_rect = pygame.Rect(width // 2, height // 2, player_size, player_size)
     p_i = i_s_f
@@ -130,20 +135,6 @@ def run_game(game_data):
             elif self.rect.y > target_rect.y:
                 self.rect.y -= self.speed
 
-    
-    class gunner(Enemy.__init__):
-        def move(self, target_rect): 
-            if abs(abs(target_x-self.x)**2+abs(target_y-self.y)**2-(height*0.4)**2)<=2:
-                return None
-            elif abs(target_x-self.x)**2+abs(target_y-self.y)**2<=(height*0.4)**2-2:
-                if self.rect.x > target_rect.x:
-                    self.rect.x += self.speed
-                elif self.rect.x < target_rect.x:
-                    self.rect.x -= self.speed
-                if self.rect.y > target_rect.y:
-                    self.rect.y += self.speed
-                elif self.rect.y < target_rect.y:
-                    self.rect.y -= self.speed
     enemies = []
     SPAWN_ENEMY = pygame.USEREVENT + 1
     pygame.time.set_timer(SPAWN_ENEMY, 800)
