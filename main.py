@@ -365,10 +365,15 @@ def run_game(game_data):
             screen.blit(enemy.img, (draw_x, draw_y, enemy.size, enemy.size))
 
         # 투사체 렌더링
-        for proj in q_projectiles:
-            draw_x = proj.rect.x - p_rect.x + (width // 2 - player_size // 2)
-            draw_y = proj.rect.y - p_rect.y + (height // 2 - player_size // 2)
-            screen.blit(proj.image, (draw_x, draw_y))
+        for q_proj in q_projectiles:
+            draw_x = q_proj.rect.x - p_rect.x + (width // 2 - player_size // 2)
+            draw_y = q_proj.rect.y - p_rect.y + (height // 2 - player_size // 2)
+            screen.blit(q_proj.image, (draw_x, draw_y))
+
+        for w_proj in w_projectiles:
+            draw_x = w_proj.rect.x - p_rect.x + (width // 2 - player_size // 2)
+            draw_y = w_proj.rect.y - p_rect.y + (height // 2 - player_size // 2)
+            screen.blit(w_proj.image, (draw_x, draw_y))
 
         if toxic_timer > 0:
             e_img_x = (width // 2)- 125  # 250의 절반인 125 오프셋
