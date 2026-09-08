@@ -88,9 +88,12 @@ def run_game(game_data):
             # 각도 계산 (라디안 -> 각도 변환)
             self.angle = math.atan2(target_y - y, target_x - x)
             degrees = math.degrees(self.angle)
-            
+            if type == 'q':
+                self.image = pygame.transform.rotate(base_img, -degrees)
+            elif type == 'w':
+                self.image = pygame.transform.rotate(base_img, 0)
             # 참격 이미지의 기본 방향에 맞게 회전 각도를 보정합니다.
-            self.image = pygame.transform.rotate(base_img, -degrees)
+            
             self.rect = self.image.get_rect(center=(x, y))
             
             speed = 16
