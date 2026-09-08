@@ -46,7 +46,7 @@ def run_game(game_data):
     i_s_br = pygame.transform.flip(i_s_bl, 1, 0)
 
     skill_q_image = pygame.image.load(path_skill_q)
-    skill_q_image = pygame.transform.scale(skill_q_image, (40, 40))  # 스킬 이미지 크기 조정
+    skill_q_image = pygame.transform.scale(skill_q_image, (60, 60))  # 스킬 이미지 크기 조정
 
     skill_r_image = pygame.image.load(path_skill_r)
     skill_r_image = pygame.transform.scale(skill_r_image, (80, 80))  # 스킬 이미지 크기 조정
@@ -72,12 +72,13 @@ def run_game(game_data):
     toxic_duration = 120 
 
     # 스킬 발사체 (점강사 등) 관리 리스트
-    projectiles = []
+    q_projectiles = []
+    w_projectiles = []
 
     class Projectile:
-        def __init__(self, x, y, target_x, target_y):
-            self.size = 60
-            base_img = pygame.transform.scale(skill_q_image, (self.size, self.size))
+        def __init__(self, x, y, target_x, target_y,type):
+            if type == 'q':
+                base_img = skill_q_image
             
             # 각도 계산 (라디안 -> 각도 변환)
             self.angle = math.atan2(target_y - y, target_x - x)
@@ -168,7 +169,7 @@ def run_game(game_data):
                             # 적이 없으면 마지막 이동 방향으로 발사
                             target_x, target_y = p_rect.centerx + last_dir_x * 100, p_rect.centery + last_dir_y * 100
                         
-                        projectiles.append(Projectile(p_rect.centerx, p_rect.centery, target_x, target_y))
+                        q_projectiles.append(Projectile(p_rect.centerx, p_rect.centery, target_x, target_y,'q'))
                         q_cool = 18
 
 
@@ -190,7 +191,7 @@ def run_game(game_data):
                         hitbox_size
                     )
                     
-                    for enemy in enemies[:]:
+                    for enemy in enemies:
                         if e_rect.colliderect(enemy.rect):
                             enemy.poison_timer = 120  # 독 지속 시간 설정 (이미지가 유지되는 동안)
                             enemy.poison_tick = 0     # 즉시 틱 타이머 초기화
@@ -253,15 +254,15 @@ def run_game(game_data):
         if move_x != 0 or move_y != 0:
             last_dir_x, last_dir_y = move_x, move_y
 
-        for proj in projectiles[:]:
+        for proj in q_projectiles:
             proj.update()
             hit_proj = False
-            for enemy in enemies[:]:
+            for enemy in enemies:
                 if proj.rect.colliderect(enemy.rect):
                     # 명중한 적과 주변 적들에게 실 압박 폭발 데미지 부여!
-                    for target in enemies[:]:
+                    for target in enemies:
                         # 폭발 반경(예: 80픽셀) 내의 적들에게 광역 데미지
-                        target.hp -= 10  # 강력한 폭발 데미지
+                        target.hp -= 1000000000  # 강력한 폭발 데미지
                     if target.hp <= 0 and target in enemies:
                         enemies.remove(target)
                     hit_proj = True
@@ -269,10 +270,10 @@ def run_game(game_data):
             
             # 화면 밖을 벗어나거나 적중하면 제거
             if hit_proj or abs(proj.rect.x - p_rect.x) > width or abs(proj.rect.y - p_rect.y) > height:
-                if proj in projectiles:
-                    projectiles.remove(proj)
+                if proj in q_projectiles:
+                    q_projectiles.remove(proj)
 
-        for enemy in enemies[:]:
+        for enemy in enemies:
             enemy.move(p_rect)
             
             # 독 상태(poison_timer)가 남아있다면 지속적으로 데미지 누적
@@ -281,9 +282,9 @@ def run_game(game_data):
                 enemy.poison_tick += 1
                 
                 # 예: 30프레임(약 0.5초)마다 독 데미지 틱이 들어가도록 설정 (누적 데미지)
-                if enemy.poison_tick >= 10:
+                if enemy.poison_tick >= 4:
                     enemy.poison_tick = 0
-                    enemy.hp -= 10  # 틱당 독 데미지
+                    enemy.hp -= 1  # 틱당 독 데미지
                     print(f"독 데미지 누적! 남은 HP: {enemy.hp}")
                     if enemy.hp <= 0:
                         enemies.remove(enemy)
@@ -322,7 +323,7 @@ def run_game(game_data):
             screen.blit(enemy.img, (draw_x, draw_y, enemy.size, enemy.size))
 
         # 투사체 렌더링
-        for proj in projectiles:
+        for proj in q_projectiles:
             draw_x = proj.rect.x - p_rect.x + (width // 2 - player_size // 2)
             draw_y = proj.rect.y - p_rect.y + (height // 2 - player_size // 2)
             screen.blit(proj.image, (draw_x, draw_y))
