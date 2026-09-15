@@ -219,6 +219,10 @@ def run_game(game_data):
                     w_projectiles.append(Projectile(p_rect.centerx, p_rect.centery, target_x, target_y,'w'))
                     w_cool = 18
 
+                if event.key == pygame.K_w and event.type == pygame.KEYUP:
+                    w_projectiles.clear()  # W 키를 떼면 발사체 제거
+                    
+
                 if event.key == pygame.K_e:
                     print("스킬 발동: 마비톡식!")
                     toxic_timer = toxic_duration  # 지속 시간 120프레임 설정
@@ -325,7 +329,7 @@ def run_game(game_data):
                             break
                     
                     # 화면 밖을 벗어나거나 적중하면 제거
-                    if hit_proj or abs(wproj.rect.x - p_rect.x) > width or abs(wproj.rect.y - p_rect.y) > height:
+                    if hit_proj or abs(wproj.rect.x - p_rect.x) > width or abs(wproj.rect.y - p_rect.y) > height or not keyInput[pygame.K_w]:
                         if wproj in w_projectiles:
                             
                             w_projectiles.remove(wproj)
