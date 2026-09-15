@@ -149,7 +149,7 @@ def run_game(game_data):
 
     
     class gunner:
-        def move(self, target_rect): 
+        def move(self, target_rect):
             if abs(abs(target_x-self.x)**2+abs(target_y-self.y)**2-(height*0.4)**2)<=2:
                 return None
             elif abs(target_x-self.x)**2+abs(target_y-self.y)**2<=(height*0.4)**2-2:
