@@ -73,7 +73,9 @@ def run_game(game_data):
     
     q_cool = 0
     r_cool = 0
-    max_hp = 1000
+    w_cool = 0
+    e_cool = 0
+    max_hp = 512
     player_hp = max_hp
     hit_cooldown = 0  
     defense_buff = 0  # R: 신체장갑 버프 지속 시간
@@ -127,7 +129,7 @@ def run_game(game_data):
 
     class Enemy:
         def __init__(self, x, y):
-            self.hp = 30
+            self.hp = 128
             self.size = 50
             self.rect = pygame.Rect(x, y, self.size, self.size)
             self.speed = 2
@@ -205,42 +207,45 @@ def run_game(game_data):
 
 
                 if event.key == pygame.K_w:
-                    # W: 점강사 (실 발사 및 자동 조준)
-                    print("스킬 발동: 점강사!")
-                    target_x, target_y = 0, 0
-                    if enemies:
-                    # 가장 가까운 적을 자동 조준
-                        closest_enemy = min(enemies, key=lambda e: math.hypot(e.rect.centerx - p_rect.centerx, e.rect.centery - p_rect.centery))
-                        target_x, target_y = closest_enemy.rect.centerx, closest_enemy.rect.centery
-                    else:
-                    # 적이 없으면 마지막 이동 방향으로 발사
-                        target_x, target_y = p_rect.centerx + last_dir_x * 100, p_rect.centery + last_dir_y * 100
-                                            
-                    w_projectiles.append(Projectile(p_rect.centerx, p_rect.centery, target_x, target_y,'w'))
-                    w_cool = 18
+                    if w_cool <0:
+                        # W: 점강사 (실 발사 및 자동 조준)
+                        print("스킬 발동: 점강사!")
+                        target_x, target_y = 0, 0
+                        if enemies:
+                        # 가장 가까운 적을 자동 조준
+                            closest_enemy = min(enemies, key=lambda e: math.hypot(e.rect.centerx - p_rect.centerx, e.rect.centery - p_rect.centery))
+                            target_x, target_y = closest_enemy.rect.centerx, closest_enemy.rect.centery
+                        else:
+                        # 적이 없으면 마지막 이동 방향으로 발사
+                            target_x, target_y = p_rect.centerx + last_dir_x * 100, p_rect.centery + last_dir_y * 100
+                                                
+                        w_projectiles.append(Projectile(p_rect.centerx, p_rect.centery, target_x, target_y,'w'))
+                        w_cool = 18
 
                 if event.key == pygame.K_w and event.type == pygame.KEYUP:
                     w_projectiles.clear()  # W 키를 떼면 발사체 제거
-                    
+                    w_cool=-1
 
                 if event.key == pygame.K_e:
-                    print("스킬 발동: 마비톡식!")
-                    toxic_timer = toxic_duration  # 지속 시간 120프레임 설정
-                    
-                    # 이미지 크기(100x100)보다 히트박스를 살짝 더 크게(예: 140x140) 생성하여 중심에 배치
-                    hitbox_size = 250
-                    e_rect = pygame.Rect(
-                        p_rect.centerx - hitbox_size // 2, 
-                        p_rect.centery - hitbox_size // 2, 
-                        hitbox_size, 
-                        hitbox_size
-                    )
-                    
-                    for enemy in enemies:
-                        if e_rect.colliderect(enemy.rect):
-                            enemy.poison_timer = 120  # 독 지속 시간 설정 (이미지가 유지되는 동안)
-                            enemy.poison_tick = 0     # 즉시 틱 타이머 초기화
-                            print("적에게 독 부여!")
+                    if e_cool<0:
+                        e_cool=240
+                        print("스킬 발동: 마비톡식!")
+                        toxic_timer = toxic_duration  # 지속 시간 120프레임 설정
+                        
+                        # 이미지 크기(100x100)보다 히트박스를 살짝 더 크게(예: 140x140) 생성하여 중심에 배치
+                        hitbox_size = 250
+                        e_rect = pygame.Rect(
+                            p_rect.centerx - hitbox_size // 2, 
+                            p_rect.centery - hitbox_size // 2, 
+                            hitbox_size, 
+                            hitbox_size
+                        )
+                        
+                        for enemy in enemies:
+                            if e_rect.colliderect(enemy.rect):
+                                enemy.poison_timer = 120  # 독 지속 시간 설정 (이미지가 유지되는 동안)
+                                enemy.poison_tick = 0     # 즉시 틱 타이머 초기화
+                                print("적에게 독 부여!")
 
                 if event.key == pygame.K_r:
                     if r_cool < 0:
@@ -304,8 +309,8 @@ def run_game(game_data):
             hit_proj = False
             for enemy in enemies:
                 if qproj.rect.colliderect(enemy.rect):
-                    enemy.hp -= 10
-                    
+                    # 명중한 적과 주변 적들에게 실 압박 폭발 데미지 부여!
+                    enemy.hp -= 44  # 강력한 폭발 데미지
                     if enemy.hp <= 0 and enemy in enemies:
                         enemies.remove(enemy)
                     hit_proj = True
@@ -321,6 +326,18 @@ def run_game(game_data):
                     hit_proj = False
                     for enemy in enemies:
                         if wproj.rect.colliderect(enemy.rect):
+                            enemy.hp -= 5  # 강력한 폭발 데미지
+                            for splash in enemies:
+                                if abs(enemy.rect.centerx-splash.rect.centerx)**2+abs(enemy.rect.centery-splash.rect.centery)**2<=10000:
+                                    splash.hp -= 27
+                                    print('a') 
+                            a = 0
+                            while a<len(enemies):
+                                enemy = enemies[a]
+                                if enemy.hp <= 0 and splash in enemies:
+                                    enemies.remove(enemy)
+                                else:
+                                    a+=1
                             # 명중한 적과 주변 적들에게 실 압박 폭발 데미지 부여!
                             enemy.hp -= 10  # 강력한 폭발 데미지
                             if enemy.hp <= 0 and enemy in enemies:
@@ -343,7 +360,7 @@ def run_game(game_data):
                 enemy.poison_tick += 1
                 
                 # 예: 30프레임(약 0.5초)마다 독 데미지 틱이 들어가도록 설정 (누적 데미지)
-                if enemy.poison_tick >= 4:
+                if enemy.poison_tick >= 2:
                     enemy.poison_tick = 0
                     enemy.hp -= 1  # 틱당 독 데미지
                     if enemy.hp > 0:
@@ -441,6 +458,8 @@ def run_game(game_data):
         if defense_buff >=0:defense_buff -= 1
         if q_cool>=0:q_cool -= 1
         if r_cool>=0:r_cool -= 1
+        if w_cool>=0:w_cool -= 1
+        if e_cool>=0:e_cool -= 1
 
         pygame.display.update()
         clock.tick(60)
