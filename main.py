@@ -1,5 +1,5 @@
 import pygame, sys, random, os, math
-from menu import run_menu
+from menu import run_menu,get_custom_font
 
 #hello
 
@@ -70,7 +70,10 @@ def run_game(game_data):
         pygame.transform.scale(pygame.image.load(path_stage1_1), TILE_SIZE),
         pygame.transform.scale(pygame.image.load(path_stage1_2), TILE_SIZE)
     ]
-    
+    font = get_custom_font(40)
+
+    wave = 1
+    time = 0
     q_cool = 0
     r_cool = 0
     w_cool = 0
@@ -132,22 +135,23 @@ def run_game(game_data):
             self.hp = 128
             self.size = 50
             self.rect = pygame.Rect(x, y, self.size, self.size)
-            self.speed = 2
+            self.speed = 5
             self.img = pygame.image.load(path_enemy1)
             self.img = pygame.transform.scale(self.img,(65,65))
             self.poison_timer = 0  # 독 데미지가 들어갈 남은 프레임/시간
             self.poison_tick = 0 
 
         def move(self, target_rect):
-            if self.rect.x < target_rect.x:
-                self.rect.x += self.speed
-            elif self.rect.x > target_rect.x:
-                self.rect.x -= self.speed
-
-            if self.rect.y < target_rect.y:
-                self.rect.y += self.speed
-            elif self.rect.y > target_rect.y:
-                self.rect.y -= self.speed
+            if abs(self.rect.x - target_rect.x)>5:
+                if self.rect.x < target_rect.x:
+                    self.rect.x += self.speed
+                elif self.rect.x > target_rect.x:
+                    self.rect.x -= self.speed
+            if abs(self.rect.y-target_rect.y)>5:
+                if self.rect.y < target_rect.y:
+                    self.rect.y += self.speed
+                elif self.rect.y > target_rect.y:
+                    self.rect.y -= self.speed
 
     
     class gunner:
@@ -259,22 +263,23 @@ def run_game(game_data):
                     LCTRL = False
             
             if event.type == SPAWN_ENEMY:
-                side = random.choice(['top', 'bottom', 'left', 'right'])
-                if side == 'top':
-                    ex = random.randint(p_rect.x - width, p_rect.x + width)
-                    ey = p_rect.y - height // 2 - 100
-                elif side == 'bottom':
-                    ex = random.randint(p_rect.x - width, p_rect.x + width)
-                    ey = p_rect.y + height // 2 + 100
-                elif side == 'left':
-                    ex = p_rect.x - width // 2 - 100
-                    ey = random.randint(p_rect.y - height, p_rect.y + height)
-                else:
-                    ex = p_rect.x + width // 2 + 100
-                    ey = random.randint(p_rect.y - height, p_rect.y + height)
-                
-                enemies.append(Enemy(ex, ey))
-                spawn_cool = 1
+                for i in range(wave):
+                    side = random.choice(['top', 'bottom', 'left', 'right'])
+                    if side == 'top':
+                        ex = random.randint(p_rect.x - width, p_rect.x + width)
+                        ey = p_rect.y - height // 2 - 100
+                    elif side == 'bottom':
+                        ex = random.randint(p_rect.x - width, p_rect.x + width)
+                        ey = p_rect.y + height // 2 + 100
+                    elif side == 'left':
+                        ex = p_rect.x - width // 2 - 100
+                        ey = random.randint(p_rect.y - height, p_rect.y + height)
+                    else:
+                        ex = p_rect.x + width // 2 + 100
+                        ey = random.randint(p_rect.y - height, p_rect.y + height)
+                    
+                    enemies.append(Enemy(ex, ey))
+                    spawn_cool = 1
 
         keyInput = pygame.key.get_pressed()
         
@@ -395,7 +400,8 @@ def run_game(game_data):
                 screen.blit(stage1_images[1], (bx + TILE_SIZE[0], by))                
                 screen.blit(stage1_images[1], (bx, by + TILE_SIZE[1]))                
                 screen.blit(stage1_images[0], (bx + TILE_SIZE[0], by + TILE_SIZE[1])) 
-
+        wave_txt=font.render(f'wave{wave}',True,(255,255,255))
+        screen.blit(wave_txt,(0,0,100,100))
         for enemy in enemies:
             draw_x = enemy.rect.x - p_rect.x + (width // 2 - player_size // 2)
             draw_y = enemy.rect.y - p_rect.y + (height // 2 - player_size // 2)
@@ -460,7 +466,8 @@ def run_game(game_data):
         if r_cool>=0:r_cool -= 1
         if w_cool>=0:w_cool -= 1
         if e_cool>=0:e_cool -= 1
-
+        time +=1
+        if time%600 == 0:wave+=1;player_speed+=1
         pygame.display.update()
         clock.tick(60)
 
