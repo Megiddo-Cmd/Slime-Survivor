@@ -219,6 +219,10 @@ def run_game(game_data):
                     w_projectiles.append(Projectile(p_rect.centerx, p_rect.centery, target_x, target_y,'w'))
                     w_cool = 18
 
+                if event.key == pygame.K_w and event.type == pygame.KEYUP:
+                    w_projectiles.clear()  # W 키를 떼면 발사체 제거
+                    
+
                 if event.key == pygame.K_e:
                     print("스킬 발동: 마비톡식!")
                     toxic_timer = toxic_duration  # 지속 시간 120프레임 설정
@@ -317,15 +321,24 @@ def run_game(game_data):
                     hit_proj = False
                     for enemy in enemies:
                         if wproj.rect.colliderect(enemy.rect):
-                            # 명중한 적과 주변 적들에게 실 압박 폭발 데미지 부여!
-                            enemy.hp -= 10  # 강력한 폭발 데미지
-                            if enemy.hp <= 0 and enemy in enemies:
-                                enemies.remove(enemy)
+                            enemy.hp -= 3  # 강력한 폭발 데미지
+                            for splash in enemies:
+                                print(abs(enemy.rect.centerx-splash.rect.centerx)**2+abs(enemy.rect.centery-splash.rect.centery)**2)
+                                if abs(enemy.rect.centerx-splash.rect.centerx)**2+abs(enemy.rect.centery-splash.rect.centery)**2<=10000:
+                                    splash.hp -= 10000    
+                                    print('a') 
+                            a = 0
+                            while a<len(enemies):
+                                enemy = enemies[a]
+                                if enemy.hp <= 0 and splash in enemies:
+                                    enemies.remove(enemy)
+                                else:
+                                    a+=1
                             hit_proj = True
                             break
                     
                     # 화면 밖을 벗어나거나 적중하면 제거
-                    if hit_proj or abs(wproj.rect.x - p_rect.x) > width or abs(wproj.rect.y - p_rect.y) > height:
+                    if hit_proj or abs(wproj.rect.x - p_rect.x) > width or abs(wproj.rect.y - p_rect.y) > height or not keyInput[pygame.K_w]:
                         if wproj in w_projectiles:
                             
                             w_projectiles.remove(wproj)
@@ -391,7 +404,7 @@ def run_game(game_data):
             proj_sx = w_proj.rect.centerx - p_rect.centerx + width // 2
             proj_sy = w_proj.rect.centery - p_rect.centery + height // 2
             # 슬라임에서 나가는 실
-            pygame.draw.line(screen, (186, 142, 88), (player_sx, player_sy), (proj_sx, proj_sy), 3)
+            pygame.draw.line(screen, (225,225,225), (player_sx, player_sy), (proj_sx, proj_sy), 3)
             # 슬라임 쪽에서 스틱이 발사 방향으로 뻗어 보이게
             stick_cx = player_sx + math.cos(w_proj.angle) * w_proj.stick_offset
             stick_cy = player_sy + math.sin(w_proj.angle) * w_proj.stick_offset
