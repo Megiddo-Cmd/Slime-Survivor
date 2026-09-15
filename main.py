@@ -304,8 +304,8 @@ def run_game(game_data):
             hit_proj = False
             for enemy in enemies:
                 if qproj.rect.colliderect(enemy.rect):
-                    # 명중한 적과 주변 적들에게 실 압박 폭발 데미지 부여!
-                    enemy.hp -= 10  # 강력한 폭발 데미지
+                    enemy.hp -= 10
+                    
                     if enemy.hp <= 0 and enemy in enemies:
                         enemies.remove(enemy)
                     hit_proj = True
