@@ -400,7 +400,7 @@ def run_game(game_data):
             proj_sx = w_proj.rect.centerx - p_rect.centerx + width // 2
             proj_sy = w_proj.rect.centery - p_rect.centery + height // 2
             # 슬라임에서 나가는 실
-            pygame.draw.line(screen, (186, 142, 88), (player_sx, player_sy), (proj_sx, proj_sy), 3)
+            pygame.draw.line(screen, (225,225,225), (player_sx, player_sy), (proj_sx, proj_sy), 3)
             # 슬라임 쪽에서 스틱이 발사 방향으로 뻗어 보이게
             stick_cx = player_sx + math.cos(w_proj.angle) * w_proj.stick_offset
             stick_cy = player_sy + math.sin(w_proj.angle) * w_proj.stick_offset
