@@ -151,7 +151,7 @@ def run_game(game_data):
 
     
     class gunner:
-        def move(self, target_rect): 
+        def move(self, target_rect):
             if abs(abs(target_x-self.x)**2+abs(target_y-self.y)**2-(height*0.4)**2)<=2:
                 return None
             elif abs(target_x-self.x)**2+abs(target_y-self.y)**2<=(height*0.4)**2-2:
@@ -326,6 +326,7 @@ def run_game(game_data):
                     hit_proj = False
                     for enemy in enemies:
                         if wproj.rect.colliderect(enemy.rect):
+<<<<<<< HEAD
                             enemy.hp -= 5  # 강력한 폭발 데미지
                             for splash in enemies:
                                 if abs(enemy.rect.centerx-splash.rect.centerx)**2+abs(enemy.rect.centery-splash.rect.centery)**2<=10000:
@@ -338,6 +339,12 @@ def run_game(game_data):
                                     enemies.remove(enemy)
                                 else:
                                     a+=1
+=======
+                            # 명중한 적과 주변 적들에게 실 압박 폭발 데미지 부여!
+                            enemy.hp -= 10  # 강력한 폭발 데미지
+                            if enemy.hp <= 0 and enemy in enemies:
+                                enemies.remove(enemy)
+>>>>>>> 38c823b40155140987a72ce7f2266e269e4958cd
                             hit_proj = True
                             break
                     
