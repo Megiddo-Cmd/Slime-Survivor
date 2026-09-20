@@ -74,6 +74,10 @@ def run_game(game_data):
 
     wave = 1
     time = 0
+    exp = 0
+    level = 0
+    score =0
+    enemy_hp = 128
     q_cool = 0
     r_cool = 0
     w_cool = 0
@@ -131,8 +135,8 @@ def run_game(game_data):
     clock = pygame.time.Clock()
 
     class Enemy:
-        def __init__(self, x, y):
-            self.hp = 128
+        def __init__(self, x, y,max_hp):
+            self.hp = max_hp
             self.size = 50
             self.rect = pygame.Rect(x, y, self.size, self.size)
             self.speed = 5
@@ -237,7 +241,7 @@ def run_game(game_data):
                         toxic_timer = toxic_duration  # 지속 시간 120프레임 설정
                         
                         # 이미지 크기(100x100)보다 히트박스를 살짝 더 크게(예: 140x140) 생성하여 중심에 배치
-                        hitbox_size = 250
+                        hitbox_size = 400
                         e_rect = pygame.Rect(
                             p_rect.centerx - hitbox_size // 2, 
                             p_rect.centery - hitbox_size // 2, 
@@ -247,7 +251,7 @@ def run_game(game_data):
                         
                         for enemy in enemies:
                             if e_rect.colliderect(enemy.rect):
-                                enemy.poison_timer = 120  # 독 지속 시간 설정 (이미지가 유지되는 동안)
+                                enemy.poison_timer = 120 +level * 5  # 독 지속 시간 설정 (이미지가 유지되는 동안)
                                 enemy.poison_tick = 0     # 즉시 틱 타이머 초기화
                                 print("적에게 독 부여!")
 
@@ -255,7 +259,7 @@ def run_game(game_data):
                     if r_cool < 0:
                         print("스킬 발동: 신체장갑!")
                         # 나중에 레벨업 구현 시 defense_buff_duration 값을 늘려주면 지속 시간이 함께 증가합니다!
-                        defense_buff = defense_buff_duration
+                        defense_buff = defense_buff_duration + level * 5
                         r_cool = 660
 
             if event.type == pygame.KEYUP:
@@ -278,7 +282,7 @@ def run_game(game_data):
                         ex = p_rect.x + width // 2 + 100
                         ey = random.randint(p_rect.y - height, p_rect.y + height)
                     
-                    enemies.append(Enemy(ex, ey))
+                    enemies.append(Enemy(ex, ey, enemy_hp))
                     spawn_cool = 1
 
         keyInput = pygame.key.get_pressed()
@@ -315,9 +319,12 @@ def run_game(game_data):
             for enemy in enemies:
                 if qproj.rect.colliderect(enemy.rect):
                     # 명중한 적과 주변 적들에게 실 압박 폭발 데미지 부여!
-                    enemy.hp -= 44  # 강력한 폭발 데미지
+                    enemy.hp -= 44 + level*2  # 강력한 폭발 데미지
                     if enemy.hp <= 0 and enemy in enemies:
                         enemies.remove(enemy)
+                        exp += 1
+                        score += 1
+                        player_hp = min(max_hp,player_hp+4)
                     hit_proj = True
                     break
             
@@ -333,20 +340,25 @@ def run_game(game_data):
                         if wproj.rect.colliderect(enemy.rect):
                             enemy.hp -= 5  # 강력한 폭발 데미지
                             for splash in enemies:
-                                if abs(enemy.rect.centerx-splash.rect.centerx)**2+abs(enemy.rect.centery-splash.rect.centery)**2<=10000:
-                                    splash.hp -= 27
-                                    print('a') 
+                                if abs(enemy.rect.centerx-splash.rect.centerx)**2+abs(enemy.rect.centery-splash.rect.centery)**2<=10000+level*200:
+                                    splash.hp -= 27 + level * 0.5
                             a = 0
                             while a<len(enemies):
                                 enemy = enemies[a]
                                 if enemy.hp <= 0 and splash in enemies:
                                     enemies.remove(enemy)
+                                    exp +=1
+                                    score += 1
+                                    player_hp = min(max_hp,player_hp+4)
                                 else:
                                     a+=1
                             # 명중한 적과 주변 적들에게 실 압박 폭발 데미지 부여!
                             enemy.hp -= 10  # 강력한 폭발 데미지
                             if enemy.hp <= 0 and enemy in enemies:
                                 enemies.remove(enemy)
+                                exp += 1
+                                score += 1
+                                player_hp = min(max_hp,player_hp+4)
                             hit_proj = True
                             break
                     
@@ -372,6 +384,9 @@ def run_game(game_data):
                         print(f"독 데미지 누적! 남은 HP: {enemy.hp}")
                     if enemy.hp <= 0:
                         enemies.remove(enemy)
+                        exp += 1
+                        score += 1
+                        player_hp = min(max_hp,player_hp+4)
                         continue
 
             if p_rect.colliderect(enemy.rect):
@@ -401,7 +416,11 @@ def run_game(game_data):
                 screen.blit(stage1_images[1], (bx, by + TILE_SIZE[1]))                
                 screen.blit(stage1_images[0], (bx + TILE_SIZE[0], by + TILE_SIZE[1])) 
         wave_txt=font.render(f'wave{wave}',True,(255,255,255))
+        level_txt = font.render(f'level{level}',True,(255,255,255))
+        score_txt = font.render(f'score{score}',True,(255,255,255))
         screen.blit(wave_txt,(0,0,100,100))
+        screen.blit(level_txt,(wave_txt.get_width(),0,100,100))
+        screen.blit(score_txt,(width-score_txt.get_width(),0,100,100))
         for enemy in enemies:
             draw_x = enemy.rect.x - p_rect.x + (width // 2 - player_size // 2)
             draw_y = enemy.rect.y - p_rect.y + (height // 2 - player_size // 2)
@@ -467,7 +486,8 @@ def run_game(game_data):
         if w_cool>=0:w_cool -= 1
         if e_cool>=0:e_cool -= 1
         time +=1
-        if time%600 == 0:wave+=1;player_speed+=1
+        if time%350 == 0:wave+=1;player_speed+=1;enemy_hp += 0.5
+        if exp>=10:level+=exp//10;exp%=10
         pygame.display.update()
         clock.tick(60)
 
