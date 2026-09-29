@@ -203,7 +203,7 @@ def run_game(game_data):
                     running = False
                 
                 # 스킬 입력을 KEYDOWN 이벤트 안으로 이동하여 연사 방지
-                if event.key == pygame.K_e:
+                if event.key == pygame.K_r:
                     if q_cool < 0:
                         print("스킬 발동: 수인 발사!")
                         target_x, target_y = 0, 0
@@ -219,7 +219,7 @@ def run_game(game_data):
                         q_cool = 18
 
 
-                if event.key == pygame.K_r:
+                if event.key == pygame.K_e:
                     if w_cool <0:
                         # W: 점강사 (실 발사 및 자동 조준)
                         print("스킬 발동: 점강사!")
@@ -235,11 +235,11 @@ def run_game(game_data):
                         w_projectiles.append(Projectile(p_rect.centerx, p_rect.centery, target_x, target_y,'w'))
                         w_cool = 18
 
-                if event.key == pygame.K_r and event.type == pygame.KEYUP:
+                if event.key == pygame.K_e and event.type == pygame.KEYUP:
                     w_projectiles.clear()  # W 키를 떼면 발사체 제거
                     w_cool=-1
 
-                if event.key == pygame.K_q:
+                if event.key == pygame.K_w:
                     if e_cool<0:
                         e_cool=240
                         print("스킬 발동: 마비톡식!")
@@ -260,7 +260,7 @@ def run_game(game_data):
                                 enemy.poison_tick = 0     # 즉시 틱 타이머 초기화
                                 print("적에게 독 부여!")
 
-                if event.key == pygame.K_w:
+                if event.key == pygame.K_q:
                     if r_cool < 0:
                         print("스킬 발동: 신체장갑!")
                         # 나중에 레벨업 구현 시 defense_buff_duration 값을 늘려주면 지속 시간이 함께 증가합니다!
