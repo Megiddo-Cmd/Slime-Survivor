@@ -486,7 +486,7 @@ def run_game(game_data):
         if w_cool>=0:w_cool -= 1
         if e_cool>=0:e_cool -= 1
         time +=1
-        if time%350 == 0:wave+=1;player_speed+=1;enemy_hp += 0.5
+        if time%10800 == 0 and wave <3:wave+=1;player_speed+=1;enemy_hp += 0.5
         if exp>=10:level+=exp//10;exp%=10
         pygame.display.update()
         clock.tick(60)
