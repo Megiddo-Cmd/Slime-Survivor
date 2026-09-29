@@ -82,7 +82,7 @@ def run_game(game_data):
     r_cool = 0
     w_cool = 0
     e_cool = 0
-    max_hp = 512
+    max_hp = 1024
     player_hp = max_hp
     hit_cooldown = 0  
     defense_buff = 0  # R: 신체장갑 버프 지속 시간
