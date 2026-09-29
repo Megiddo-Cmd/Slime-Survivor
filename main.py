@@ -360,7 +360,7 @@ def run_game(game_data):
                             if abs(wproj.rect.centerx - p_rect.centerx)**2 + abs(wproj.rect.centery - p_rect.centery)**2 <= 10000:
                                 pass
                             else:
-                                enemy.hp -= 5  # 강력한 폭발 데미지
+                                # 강력한 폭발 데미지
                                 for splash in enemies:
                                     if abs(enemy.rect.centerx-splash.rect.centerx)**2+abs(enemy.rect.centery-splash.rect.centery)**2<=10000+level*200:
                                         splash.hp -= 27 + level * 0.5
@@ -374,7 +374,7 @@ def run_game(game_data):
                                         player_hp = min(max_hp,player_hp+4)
                                     else:
                                         a+=1
-                                enemy.hp -= 10  # 강력한 폭발 데미지
+                                enemy.hp -= 128  # 강력한 폭발 데미지
                                 if enemy.hp <= 0 and enemy in enemies:
                                     enemies.remove(enemy)
                                     exp += 1
