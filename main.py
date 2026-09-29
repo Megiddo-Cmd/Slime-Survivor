@@ -504,6 +504,8 @@ def run_game(game_data):
             screen.blit(skill_r_image, (r_img_x, r_img_y))
 
         for boss in Bosses:
+            image=boss.img[0]
+            screen.blit(image,(boss.rect))
             if boss.skill1 >0:
                 screen.blit(veldora_skill1_image,(boss.rect.x,boss.rect.y))
         if defense_buff >=0:defense_buff -= 1
