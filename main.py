@@ -165,17 +165,26 @@ def run_game(game_data):
                 elif self.rect.y > target_rect.y:
                     self.rect.y -= self.speed
 
-    
     class Boss(Enemy):
-        def __init__(self, x, y, max_hp,height):
+        def __init__(self, x, y, max_hp):
             self.hp = max_hp
             self.size = int(height*0.34)
             self.rect = pygame.Rect(x, y, self.size, self.size)
-            self.speed = 5
-            self.img = pygame.image.load(path_enemy1)
-            self.img = pygame.transform.scale(self.img,(65,65))
+            self.speed = 0
+            self.img = veldora_images
             self.poison_timer = 0  # 독 데미지가 들어갈 남은 프레임/시간
-            self.poison_tick = 0 
+            self.poison_tick = 0
+        def attack(self, target):
+            if abs(self.rect.x - target.x)>5:
+                if self.rect.x < target.x:
+                    self.rect.x += self.speed
+                elif self.rect.x > target.x:
+                    self.rect.x -= self.speed
+            if abs(self.rect.y-target.y)>5:
+                if self.rect.y < target.y:
+                    self.rect.y += self.speed
+                elif self.rect.y > target.y:
+                    self.rect.y -= self.speed
     enemies = []
     SPAWN_ENEMY = pygame.USEREVENT + 1
     pygame.time.set_timer(SPAWN_ENEMY, 800)
