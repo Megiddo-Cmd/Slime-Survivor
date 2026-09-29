@@ -34,6 +34,8 @@ def run_game(game_data):
     path_veldora2 = os.path.join("src", "img", "boss", "veldora", "veldora2.png")
     path_veldora3 = os.path.join("src", "img", "boss", "veldora", "veldora3.png")
     path_veldora4 = os.path.join("src", "img", "boss", "veldora", "veldora4.png")
+    path_veldora_skill_1 = os.path.join("src", "img", "boss", "veldora", "veldora_skill_1.png")
+    path_veldora_skill_2 = os.path.join("src", "img", "boss", "veldora", "veldora_skill_2.png")
 
     player_size = 70
     player_speed = 8
