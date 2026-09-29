@@ -77,7 +77,9 @@ def run_game(game_data):
     skill_r_image = pygame.transform.scale(skill_r_image, (80, 80))  # 스킬 이미지 크기 조정
 
     skill_e_image = pygame.image.load(path_skill_e)
-    skill_e_image = pygame.transform.scale(skill_e_image, (250, 250))  # 스킬 이미지 크기 조정
+    skill_e_image = pygame.transform.scale(skill_e_image, (250, 250) ) # 스킬 이미지 크기 조정
+
+    veldora_skill1_image = pygame.image.load(path_veldora_skill_1)
 
     TILE_SIZE = (128, 128)
 
@@ -172,22 +174,17 @@ def run_game(game_data):
             self.hp = max_hp
             self.size = int(height*0.34)
             self.rect = pygame.Rect(x, y, self.size, self.size)
+            self.see = 1 #위부터 시계방향
             self.speed = 0
             self.img = veldora_images
             self.poison_timer = 0  # 독 데미지가 들어갈 남은 프레임/시간
             self.poison_tick = 0
+            self.skill1 = 0
         def attack(self, target):
-            if abs(self.rect.x - target.x)>5:
-                if self.rect.x < target.x:
-                    self.rect.x += self.speed
-                elif self.rect.x > target.x:
-                    self.rect.x -= self.speed
-            if abs(self.rect.y-target.y)>5:
-                if self.rect.y < target.y:
-                    self.rect.y += self.speed
-                elif self.rect.y > target.y:
-                    self.rect.y -= self.speed
+            if abs(self.rect.x - target.x)>70:
+                self.skill1 += 200
     enemies = []
+    Bosses = []
     SPAWN_ENEMY = pygame.USEREVENT + 1
     pygame.time.set_timer(SPAWN_ENEMY, 800)
 
@@ -498,17 +495,22 @@ def run_game(game_data):
             r_img_y = (height // 2 - player_size // 2) + (player_size // 2) - 40
             screen.blit(skill_r_image, (r_img_x, r_img_y))
 
+        for boss in Bosses:
+            if boss.skill1 >0:
+                screen.blit(veldora_skill1_image,(boss.rect.x,boss.rect.y))
         if defense_buff >=0:defense_buff -= 1
         if q_cool>=0:q_cool -= 1
         if r_cool>=0:r_cool -= 1
         if w_cool>=0:w_cool -= 1
         if e_cool>=0:e_cool -= 1
         time +=1
-        if time%3600 == 0:
+        if time%300 == 0:
             if wave<3:
                 wave+=1;player_speed+=1;enemy_hp += 0.5
+                if wave == 3:
+                    Bosses.append(Boss(p_rect.x,p_rect.y+70,4096))
             else:
-                player_hp = 0
+                pass
         if exp>=10:level+=exp//10;exp%=10
         pygame.display.update()
         clock.tick(60)
