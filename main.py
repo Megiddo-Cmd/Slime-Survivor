@@ -371,7 +371,7 @@ def run_game(game_data):
                             break
                     
                     # 화면 밖을 벗어나거나 적중하면 제거
-                    if hit_proj or abs(wproj.rect.x - p_rect.x) > width or abs(wproj.rect.y - p_rect.y) > height or not keyInput[pygame.K_r]:
+                    if hit_proj or abs(wproj.rect.x - p_rect.x) > width or abs(wproj.rect.y - p_rect.y) > height or not keyInput[pygame.K_e]:
                         if wproj in w_projectiles:
                             w_projectiles.remove(wproj)
 
