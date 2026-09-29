@@ -82,7 +82,7 @@ def run_game(game_data):
     r_cool = 0
     w_cool = 0
     e_cool = 0
-    max_hp = 512
+    max_hp = 1024
     player_hp = max_hp
     hit_cooldown = 0  
     defense_buff = 0  # R: 신체장갑 버프 지속 시간
@@ -158,19 +158,8 @@ def run_game(game_data):
                     self.rect.y -= self.speed
 
     
-    class gunner:
-        def move(self, target_rect):
-            if abs(abs(target_x-self.x)**2+abs(target_y-self.y)**2-(height*0.4)**2)<=2:
-                return None
-            elif abs(target_x-self.x)**2+abs(target_y-self.y)**2<=(height*0.4)**2-2:
-                if self.rect.x > target_rect.x:
-                    self.rect.x += self.speed
-                elif self.rect.x < target_rect.x:
-                    self.rect.x -= self.speed
-                if self.rect.y > target_rect.y:
-                    self.rect.y += self.speed
-                elif self.rect.y < target_rect.y:
-                    self.rect.y -= self.speed
+    class Boss(Enemy):
+        pass
     enemies = []
     SPAWN_ENEMY = pygame.USEREVENT + 1
     pygame.time.set_timer(SPAWN_ENEMY, 800)
@@ -486,7 +475,11 @@ def run_game(game_data):
         if w_cool>=0:w_cool -= 1
         if e_cool>=0:e_cool -= 1
         time +=1
-        if time%10800 == 0 and wave <3:wave+=1;player_speed+=1;enemy_hp += 0.5
+        if time%3600 == 0:
+            if wave<3:
+                wave+=1;player_speed+=1;enemy_hp += 0.5
+            else:
+                player_hp = 0
         if exp>=10:level+=exp//10;exp%=10
         pygame.display.update()
         clock.tick(60)
