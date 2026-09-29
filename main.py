@@ -28,10 +28,10 @@ def run_game(game_data):
     path_skill_r = os.path.join("src", "img", "player", "slime_skill_r.png")
     path_skill_e = os.path.join("src", "img", "player", "slime_skill_e.png")
     path_enemy1 = os.path.join("src", "img", "stage1", "Stage1_Enemy.png")
-    path_veldora1 = os.path.join("src", "img", "stage1", "veldora1.png")
-    path_veldora2 = os.path.join("src", "img", "stage1", "veldora2.png")
-    path_veldora3 = os.path.join("src", "img", "stage1", "veldora3.png")
-    path_veldora4 = os.path.join("src", "img", "stage1", "veldora4.png")
+    path_veldora1 = os.path.join("src", "img", "boss", "veldora", "veldora1.png")
+    path_veldora2 = os.path.join("src", "img", "boss", "veldora", "veldora2.png")
+    path_veldora3 = os.path.join("src", "img", "boss", "veldora", "veldora3.png")
+    path_veldora4 = os.path.join("src", "img", "boss", "veldora", "veldora4.png")
 
     player_size = 70
     player_speed = 8
