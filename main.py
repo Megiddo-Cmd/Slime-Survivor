@@ -10,7 +10,9 @@ def run_game(game_data):
     pygame.init()
     info = pygame.display.Info()
     width = int(info.current_w *0.7)
+    print(width)
     height = int(info.current_h * 0.7)
+    print(height)
     screen = pygame.display.set_mode((width, height), pygame.RESIZABLE)
     pygame.display.set_caption(f"Slime Survivor - Stage {current_stage}")
     pygame.display.set_icon(pygame.image.load(os.path.join(".","Icon.png")))
@@ -122,11 +124,6 @@ def run_game(game_data):
             self.rect.x += self.dx
             self.rect.y += self.dy
 
-
-
-
-
-
     p_rect = pygame.Rect(width // 2, height // 2, player_size, player_size)
     p_i = i_s_f
     running = True
@@ -159,7 +156,15 @@ def run_game(game_data):
 
     
     class Boss(Enemy):
-        pass
+        def __init__(self, x, y, max_hp,height):
+            self.hp = max_hp
+            self.size = int(height*0.34)
+            self.rect = pygame.Rect(x, y, self.size, self.size)
+            self.speed = 5
+            self.img = pygame.image.load(path_enemy1)
+            self.img = pygame.transform.scale(self.img,(65,65))
+            self.poison_timer = 0  # 독 데미지가 들어갈 남은 프레임/시간
+            self.poison_tick = 0 
     enemies = []
     SPAWN_ENEMY = pygame.USEREVENT + 1
     pygame.time.set_timer(SPAWN_ENEMY, 800)
@@ -187,7 +192,7 @@ def run_game(game_data):
                     running = False
                 
                 # 스킬 입력을 KEYDOWN 이벤트 안으로 이동하여 연사 방지
-                if event.key == pygame.K_q:
+                if event.key == pygame.K_e:
                     if q_cool < 0:
                         print("스킬 발동: 수인 발사!")
                         target_x, target_y = 0, 0
@@ -203,7 +208,7 @@ def run_game(game_data):
                         q_cool = 18
 
 
-                if event.key == pygame.K_w:
+                if event.key == pygame.K_r:
                     if w_cool <0:
                         # W: 점강사 (실 발사 및 자동 조준)
                         print("스킬 발동: 점강사!")
@@ -219,11 +224,11 @@ def run_game(game_data):
                         w_projectiles.append(Projectile(p_rect.centerx, p_rect.centery, target_x, target_y,'w'))
                         w_cool = 18
 
-                if event.key == pygame.K_w and event.type == pygame.KEYUP:
+                if event.key == pygame.K_r and event.type == pygame.KEYUP:
                     w_projectiles.clear()  # W 키를 떼면 발사체 제거
                     w_cool=-1
 
-                if event.key == pygame.K_e:
+                if event.key == pygame.K_q:
                     if e_cool<0:
                         e_cool=240
                         print("스킬 발동: 마비톡식!")
@@ -244,7 +249,7 @@ def run_game(game_data):
                                 enemy.poison_tick = 0     # 즉시 틱 타이머 초기화
                                 print("적에게 독 부여!")
 
-                if event.key == pygame.K_r:
+                if event.key == pygame.K_w:
                     if r_cool < 0:
                         print("스킬 발동: 신체장갑!")
                         # 나중에 레벨업 구현 시 defense_buff_duration 값을 늘려주면 지속 시간이 함께 증가합니다!
@@ -256,23 +261,26 @@ def run_game(game_data):
                     LCTRL = False
             
             if event.type == SPAWN_ENEMY:
-                for i in range(wave):
-                    side = random.choice(['top', 'bottom', 'left', 'right'])
-                    if side == 'top':
-                        ex = random.randint(p_rect.x - width, p_rect.x + width)
-                        ey = p_rect.y - height // 2 - 100
-                    elif side == 'bottom':
-                        ex = random.randint(p_rect.x - width, p_rect.x + width)
-                        ey = p_rect.y + height // 2 + 100
-                    elif side == 'left':
-                        ex = p_rect.x - width // 2 - 100
-                        ey = random.randint(p_rect.y - height, p_rect.y + height)
-                    else:
-                        ex = p_rect.x + width // 2 + 100
-                        ey = random.randint(p_rect.y - height, p_rect.y + height)
-                    
-                    enemies.append(Enemy(ex, ey, enemy_hp))
-                    spawn_cool = 1
+                if wave <3:
+                    for i in range(wave):
+                        side = random.choice(['top', 'bottom', 'left', 'right'])
+                        if side == 'top':
+                            ex = random.randint(p_rect.x - width, p_rect.x + width)
+                            ey = p_rect.y - height // 2 - 100
+                        elif side == 'bottom':
+                            ex = random.randint(p_rect.x - width, p_rect.x + width)
+                            ey = p_rect.y + height // 2 + 100
+                        elif side == 'left':
+                            ex = p_rect.x - width // 2 - 100
+                            ey = random.randint(p_rect.y - height, p_rect.y + height)
+                        else:
+                            ex = p_rect.x + width // 2 + 100
+                            ey = random.randint(p_rect.y - height, p_rect.y + height)
+                        
+                        enemies.append(Enemy(ex, ey, enemy_hp))
+                        spawn_cool = 1
+                else:
+                    pass
 
         keyInput = pygame.key.get_pressed()
         
@@ -352,9 +360,8 @@ def run_game(game_data):
                             break
                     
                     # 화면 밖을 벗어나거나 적중하면 제거
-                    if hit_proj or abs(wproj.rect.x - p_rect.x) > width or abs(wproj.rect.y - p_rect.y) > height or not keyInput[pygame.K_w]:
+                    if hit_proj or abs(wproj.rect.x - p_rect.x) > width or abs(wproj.rect.y - p_rect.y) > height or not keyInput[pygame.K_r]:
                         if wproj in w_projectiles:
-                            
                             w_projectiles.remove(wproj)
 
         for enemy in enemies:
