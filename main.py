@@ -28,6 +28,10 @@ def run_game(game_data):
     path_skill_r = os.path.join("src", "img", "player", "slime_skill_r.png")
     path_skill_e = os.path.join("src", "img", "player", "slime_skill_e.png")
     path_enemy1 = os.path.join("src", "img", "stage1", "Stage1_Enemy.png")
+    path_veldora1 = os.path.join("src", "img", "stage1", "Veldora1.png")
+    path_veldora2 = os.path.join("src", "img", "stage1", "Veldora2.png")
+    path_veldora3 = os.path.join("src", "img", "stage1", "Veldora3.png")
+    path_veldora4 = os.path.join("src", "img", "stage1", "Veldora4.png")
 
     player_size = 70
     player_speed = 8
@@ -46,6 +50,13 @@ def run_game(game_data):
     i_s_bl = pygame.image.load(path_back_lr)
     i_s_bl = pygame.transform.scale(i_s_bl, (player_size, player_size))
     i_s_br = pygame.transform.flip(i_s_bl, 1, 0)
+
+    veldora_images = [
+        pygame.transform.scale(pygame.image.load(path_veldora1), (200, 200)),
+        pygame.transform.scale(pygame.image.load(path_veldora2), (200, 200)),
+        pygame.transform.scale(pygame.image.load(path_veldora3), (200, 200)),
+        pygame.transform.scale(pygame.image.load(path_veldora4), (200, 200))
+    ]
 
     skill_q_image = pygame.image.load(path_skill_q)
     skill_q_image = pygame.transform.scale(skill_q_image, (60, 60))  # 스킬 이미지 크기 조정
